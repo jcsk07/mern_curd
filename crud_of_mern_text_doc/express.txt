@@ -1,0 +1,53 @@
+to install express we should use go to the flg commands:-
+1)install nodejs in your system
+2)create a foler for the express framework
+
+-------------------------creating express ----------------
+>npm init          //ithe initialisation f the requires packages
+>npm install --save express       //to install the express in the selected folder
+>npm install --save nodemon       //used not to restarty the server every time 
+				    				for every changes made
+
+-----------------------hello world--------------------------
+create a new text document and sab=ve it as index.js
+in it type the following code :-
+
+var express = require('express');  //importing the express and saving it to a variable named express
+var app = express();               //the express function call is done to the app variiable
+
+app.get('/', function(req, res){
+	console.log("visit:- http://localhost:3000")
+   res.send("Hello world!");
+});
+
+app.listen(3000);
+
+from above line 18 we can say the app.get is method used to define routes in an Express application
+the syntax is :-       app.method(path,handler)
+in above we see that get is a method used and we also have put,post ect metyhods in app for rout
+the path is that the url used to access the page
+the handler connsis a function with req-(request),res(response) which tells us what request came and the response sending
+
+the res.send() is used to send the data or rout to the other pages
+
+--------------getting JSON data from the post method------------
+
+to get the json data we use the body-parser package soe we should type the following command:-
+
+npm install --save body-parser
+
+to check if it is installed or not go to the package.json data file 
+and check weather it is present in dependencies or not
+
+so to use it we should import the body-parser so in the index.js file type the flg:-
+
+var bodyParser=require('body-parser');
+app.use(bodyParser.json());//used for the json data
+app.use(bodyParser.urlencoded({ extended: true })); //used for the url encoded data
+
+
+app.post('/pandu',function(req,res){        //the json data is present in the body of the request
+	console.log(req.body.name);             //we are printing the json data with a specific variable 
+    res.json(req.body);                     //sending the json data as a response
+	console.log("this is the post request of the json data");
+});

@@ -1,0 +1,14 @@
+after the installation of the momgodb 
+we have to run two command prompts to activate the mongodb:
+they are as follows:-
+-----1-------
+1)C:\mongodb\bin                               //this is the path where mongodb is installed
+2)mongod.exe --dbpath "C:\mongodb\data\db"     //this is to reun the mongod executable file in order to run the 														 mongo.exe
+
+
+open another command prompt and type the following code
+
+-------2------
+
+3)cd C:\mongodb\bin
+4)mongo
