@@ -2,9 +2,10 @@ after the installation of the momgodb
 we have to run two command prompts to activate the mongodb:
 they are as follows:-
 -----1-------
-1)C:\mongodb\bin                               //this is the path where mongodb is installed
+1)cd C:\mongodb\bin                               //this is the path where mongodb is installed
 2)mongod.exe --dbpath "C:\mongodb\data\db"     //this is to reun the mongod executable file in order to run the 														 mongo.exe
 
+mongod --storageEngine=mmapv1 --dbpath [your-path]  //incase the db is destroyed and again u have to recreate
 
 open another command prompt and type the following code
 
@@ -12,3 +13,114 @@ open another command prompt and type the following code
 
 3)cd C:\mongodb\bin
 4)mongo
+
+
+-----------SOME IMPORTANT TEXT--------------
+
+in the mongo db we call the database as databese
+table as collection
+tuple/row as document
+column as field
+table join as embedded documents
+
+------------creating the database------------
+the synatx is :-
+			use database_name
+
+our database name is:-  my_db_crud
+
+------------CREATING A COLLECTION(TABLE)-----------
+the following is an example of creating the collectin in mongodb:-
+
+db.createCollection(<name>)
+
+the name is the name of the collection
+the collection we created is :-
+	db.createCollection(experiment)
+
+----------INSERTING INTO COLLECTION(DOCUMENT)-------
+NOTE:-
+	in the collection the mongodb automatically allocates the unique id with the name:-"_id" until you assign a value to it
+
+the syntax:-
+	db.collectionName.insert({ name: "value" })
+
+eg:-
+	db.experiments.insert({_id:1,name:"chandu",age:20})
+
+	db.artists.insert( 				//for multiple documents in a single one we use the []
+   [
+     { artistname: "The Kooks" },
+     { artistname: "Bastille" },
+     { artistname: "Gang of Four" }
+   ]
+)
+
+NOTE:-
+	the inserted data is in the form of the "JSON" FORMAT
+
+-------------READING THE DATA--------------
+the syntax to return all the documets in the collection is as follows:-
+	db.collection_name.find()
+
+eg:-
+	db.experiments.find()
+
+to find by a particular field value(i.e the particular column value):-
+	db.collection_name.find({field_name:value})
+
+to find with AND condition we just place a comma(,) in the json data
+	db.mycol.find(
+   {
+      $and: [									//$and is the and operator used
+         {key1: value1}, {key2:value2}
+      ]
+   }
+)
+
+to find using  OR condition i.e aanyu one of them is present the we use the flg code:-
+
+db.mycol.find(
+   {
+      $or: [
+         {key1: value1}, {key2:value2}
+      ]
+   }
+)
+
+		---LOGICAL OPERATORS USAGE----
+Less Than				{<key>:{$lt:<value>}}    db.mycol.find({"likes":{$lt:50}}).pretty()
+Less Than Equals		{<key>:{$lte:<value>}}	 db.mycol.find({"likes":{$lte:50}}).pretty()
+Greater Than			{<key>:{$gt:<value>}}	 db.mycol.find({"likes":{$gt:50}}).pretty()
+Greater Than Equals		{<key>:{$gte:<value>}}	 db.mycol.find({"likes":{$gte:50}}).pretty()
+Not Equals				{<key>:{$ne:<value>}}	 db.mycol.find({"likes":{$ne:50}}).pretty()
+
+  	the IN operator:-
+  		this is used to find the documents which have the values in it.the following is an example:-
+  			db.musicians.find( { instrument: { $in: [ "Vocals", "Guitar" ] } } )
+  		
+----------PROJECTION QUERIES------------
+we can use this to select the particular fields in the documents and show themn
+
+the following is an example:-
+	db.experiments.find({name:"chandu"},{age:1})  	//here age:1 means that to show the age field only
+													//we can also unselect the fields by placing 0 in 1
+
+
+
+-----------SORT IN THE FINDING-----------
+
+we can also sort the data based on the field by placing the sort function after the find().
+the following is the syntax:-
+		db.collection_name.find().sort({field1:value,field2:value})  //if the value is 1 then ascending order is shown
+													   				//if the value is -1 the descending order is shown
+
+-------------UPDATING THE DOCUMENTS(ROWS)------------
+
+to update the rows we use the following code:-
+		db.collection_name.update({field1:value},{field2:update_value,field3:update_value})
+				//here field1:value is the key value to select the particular document
+				//And the remaining fields and values are used to assign the updated values
+
+----------------COMBINING TWO COLLECTIONS AND FETCHING THE MATCHING DATA----------------
+
