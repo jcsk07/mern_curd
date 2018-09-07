@@ -1,0 +1,34 @@
+let us have a form as follows:-
+
+<form class="form"  action="/studentform" method="post" name="regForm">              
+    <div class="form-group">
+        <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+NOTE:-
+	in above the the form has "action" which it deviates after we hit the submitting button
+	the method=post is the type of request we are sending to the express framework
+	the json data consist of {"username":"value"}
+
+	in above we should make a notice that in every input field or anything we are taking the "id" and
+	"name" values are same.Keep that in mind......
+
+
+when we get the post request from the html page we proceed on as follows in the index.js page in express:-
+
+var bodyParser=require('body-parser');
+app.use(bodyParser.json());					//used to use the json data comming
+app.use(express.urlencoded());
+
+
+app.post('/studentform',function(req,res){		//as the post request is to the /studentform we are writing the function
+	var person = req.body;					//saving the req.body json data to the person variable
+	res.send(person.username);				//we are sending the username value in response from person obj
+	console.log(JSON.stringify(req.body));	//used to convert the string from json format
+	console.log("this is the post request of student form");
+});
+
+SO HENCE WE CAN RETRIVE THE JSON DATA FROM THE "FORM" IN THE HTML PAGES

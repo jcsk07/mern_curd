@@ -65,7 +65,6 @@ the syntax to return all the documets in the collection is as follows:-
 
 eg:-
 	db.experiments.find()
-
 to find by a particular field value(i.e the particular column value):-
 	db.collection_name.find({field_name:value})
 
@@ -124,3 +123,67 @@ to update the rows we use the following code:-
 
 ----------------COMBINING TWO COLLECTIONS AND FETCHING THE MATCHING DATA----------------
 
+to select the data from multiple collections we use the aggregation method and in that we also use the "lookup"
+function as follows:-
+	db.collection1.aggregate([{
+	$lookup:{
+			from:"collection2",
+			localField:"field_name",		//to select the field of collection1
+			foreignField:"field_name"		//to match the field of collection2
+			as:"field_name"					//stores the collection2 matched documents in the field_name 
+											//and add it to the collection1 matched document
+	}
+	},
+	{
+	$project:{
+			"field_name":"$field_name_in_collection"	//this shows the field_name while displaying
+														//without showing the other fields
+	}
+	}])
+
+
+the following is an example:-
+
+ db.experiments.aggregate([
+ {$lookup:{from:"details",			//details is the name of collection with _id,name,pno,gender fields
+ 			localField:"_id",
+ 			foreignField:"_id",		//matching the details _id with experiments _id
+ 			as:"rollno"				//storing the document in the rollno and adding to the experiments documents
+ 			}
+ },
+ {$project:{_id:0,					//used for not showing the _id field
+ 			names:"$name",			//names is appered in the place of name
+ 			phone_number:"$rollno.pno",	//$rollno.pno is used to select the rollno document with the pno field in it
+			gender:"$rollno.gender"		//same as the above
+			}
+ }
+ ])
+
+
+ -----------------UPDATING THE DOCUMENTS IN THE COLLECTION ------------------
+ 
+The syntax for the updating the documents is as follows:-
+	db.collection_name.update({field:val},{$set:{field2:"value",field3:"value",..}})
+
+	In above  the "field:val" is used to select the particular document and the {$set:{field:val,...}}
+	is used to updat the particular field with the particular value
+
+	You can also use { upsert: true } to create a new document when no document matches the query.
+
+	You can use { multi: true } to update multiple documents that meet the query criteria.
+
+eg:-
+	db.experiments.update({name:"chandu"},{$set:{pno:"9959968787",_id:10}})
+
+
+---------------------------DELETING --------------------------------------------
+
+To delete a particula document we us the remove() function.The following is the syntax as follows:-
+
+	db.collection_name.remove({field:"value"}) //to select the document on the particular field
+
+	db.artists.deleteOne({artistname:{$in:["The Kooks","Gang of Four","Bastille"]}})	//to delete only one document
+
+	db.COLLECTION_NAME.remove(DELETION_CRITERIA,1) //to remove only one document matching the DELETION_CRITIRIA
+
+	
