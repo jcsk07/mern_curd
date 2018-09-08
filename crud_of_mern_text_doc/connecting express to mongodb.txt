@@ -1,0 +1,94 @@
+----------------------CONNECTING TO THE MONGODB--------------------
+
+type the following command in the command prompt in the project folder:-
+		npm install --save mongoose
+
+open the index.js file and type the following commad:-
+
+var mongoose=require('mongoose');							//used to connect the mongodb 
+mongoose.connect('mongodb://localhost/my_db_crud', { useNewUrlParser: true });	//used to connect the mongodb databes 
+						`														named:"my_db_crud"
+
+
+-------------------CREATING A SCHEMA------------------------------
+
+Schema is a collection format in which we can define the fields and with their respective datatypes
+
+the syntax for creating a schema is as follows:-
+	var variable = new mongoose.Schema({
+		field_name : datatype;
+	});
+
+The permitted SchemaTypes are:
+
+String
+Number
+Date
+Buffer
+Boolean
+Mixed
+ObjectId
+Array
+Decimal128
+Map
+
+the following is an example of the Schema we have created:-
+
+var studentSchema = new mongoose.Schema({  //we are creating the Schema of collection with different fields
+	textnames : String,
+	fathername : String,
+	sex : String,
+	City : String,
+	emailid : String,
+	mobileno : String 
+});
+
+-----------------------CREATING THE MODEL(COLLECTION) IN MONGODB-------------
+//To create the Collection we use model in the mongoose.model("model_name",Schema)
+
+var stdetails = mongoose.model('stdetails', studentSchema);
+
+//The above code defines the schema for a student and is used to create a Mongoose Mode stu_details.
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("connected to mongodb my_db_crud");
+});
+
+
+------------------------INSERTING THE DATA INTO COLLECTION USING POST REQUEST--------------
+
+//WE ARE PLACING THE POST METHOD IN THIS AND ALSO INSERTING THE DATA TO THE COLLECTION
+
+app.post('/studentform',function(req,res){
+	var person = req.body; //taking the json data into the person
+	
+
+	var stu = new stdetails({  //creating a document for databese with the predeclared mode
+		textnames : person.textnames, //assigning the data from person to the stu using dot operator
+		fathername : person.fathername,
+		sex : person.sex,
+		City : person.City,
+		emailid : person.emailid,
+		mobileno : person.mobileno
+	});
+
+	//saving the student details in the COLLECTION we use the following syntax example:-
+	
+	stu.save(function(err,stu_details){
+		if(err)
+			console.log("Failed to insert the document");
+		else
+			console.log("Insertion is successful");
+	});
+
+	res.send(person.textnames);
+	console.log(JSON.stringify(req.body));
+	console.log("this is the post request of student form");
+}); 
+
+---NOTE:-
+	we should use the "save" for the Schema data in order to insert the data into collestion
+
+--------------------READING THE DATA FROM THE MODEL(COLLECTION) IN DATABASE AND PRINTING IT IN  THE SCREEN-----------
+								-------------USING GET REQUEST-----------

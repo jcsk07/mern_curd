@@ -61,21 +61,3 @@ the following is the syntax and also the example of the routing:-
 		in above the "html pages" is the folder and the student_form.html is the html page in that folder 
 
 
-----------------------CONNECTING TO THE MONGODB--------------------
-
-type the following command in the command prompt in the project folder:-
-		npm install --save mongoose
-
-open the index.js file and type the following commad:-
-
-var mongoose=require('mongoose');							//used to connect the mongodb 
-mongoose.connect('mongodb://localhost/my_db_crud');			//used to connect the mongodb databes named:"my_db_crud"
-
-app.post('/studentform',function(req,res){		//as the post request is to the /studentform we are writing the function
-	var person = req.body;					//saving the req.body json data to the person variable
-	res.send(person.username);				//we are sending the username value in response from person obj
-	console.log(JSON.stringify(req.body));	//used to convert the string from json format
-	console.log("this is the post request of student form");
-});
-
-
