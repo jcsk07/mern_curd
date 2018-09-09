@@ -186,4 +186,7 @@ To delete a particula document we us the remove() function.The following is the 
 
 	db.COLLECTION_NAME.remove(DELETION_CRITERIA,1) //to remove only one document matching the DELETION_CRITIRIA
 
-	
+to remove a collection completly we use the flg syntax:-
+
+	db.collection_name.drop();
+

@@ -92,3 +92,36 @@ app.post('/studentform',function(req,res){
 
 --------------------READING THE DATA FROM THE MODEL(COLLECTION) IN DATABASE AND PRINTING IT IN  THE SCREEN-----------
 								-------------USING GET REQUEST-----------
+
+we use the collection_name.find() option in order to select the data
+the synatx is that "
+collection_name.find({field1:value,field2:value},'field1 field2 field3',function(err,docs){
+	res.json(docs); //we are sending the json data in form of response
+});
+note:-
+In above the field1 field2 field3 are the fields to be returned and displayed
+
+1)model.find();
+2)model.findOne();
+
+3)Model.findById(id, function (err, doc) {
+  if (err) ..
+  doc.name = 'jason bourne';
+  doc.save(callback);
+});
+
+4)model.findOneAndUpdate();
+
+
+so we also have another functions such as:-
+model.
+
+app.get('/retrive',function(req,res){
+	stdetails.find(function(err,response){
+		res.json(response);
+	});
+});
+
+
+
+
