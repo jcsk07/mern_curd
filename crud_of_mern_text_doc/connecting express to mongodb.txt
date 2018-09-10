@@ -123,5 +123,97 @@ app.get('/retrive',function(req,res){
 });
 
 
+----------------------------------UPDATING THE DOCUMENTS------------------------
 
+to update the documents we use the following syntax:-
+
+	model.update(conditions,update,functions);
+
+the following is an example of that:-
+//---------------------UPDATING THE DOCUMENTS----------------------
+var up; //creating a variable for the saving of the selection of document which you want to replace
+var dat; //creatin a variable to store the updates values in it.
+
+app.get('/update',function(req,res){  //it shows the form to select the document based on the parameters
+	res.sendFile(path.join(__dirname + '/html_pages/update_form1.html'));
+});
+
+//The action from the update_form.html is sent as post request to the "/updateform" 
+
+app.post('/updateform',function(req,res){ 
+	up=req.body; //assigning the json data to "up" for finding the document
+	res.sendFile(path.join(__dirname + '/html_pages/update_form2.html')); //this is to redirtedt to the updation form
+});
+
+//the action from the update_form2.html is send as a post request for the "/completeupdate"
+
+app.post('/completeupdate',function(req,res){
+	dat=req.body; //the dat consist of the updated json data
+	stdetails.update({textnames:up.textnames},{$set:{
+		fathername:dat.fathername,
+		emailid:dat.emailid,
+		mobileno:dat.mobileno
+	}},function(err,response){
+		if(err)
+			res.send('Failed');
+		else{
+			console.log("SUCCESSFULLY UPDATED");
+			res.send('SUCCESSFULLY UPDATED');
+
+		}
+	});
+});
+
+//in above the {textnames:up.textnames} is the data for finding the documents 
+//The {$set:{fathername:dat.fathername,..}} are the data in the fields of dat to update the values of the document
+
+//In above the stdetails is the name of the model or the collection name
+
+--------------------------DELETING THE DOCUMENTS -------------------
+
+Following are the ways on model object you can do any of the following to remove document(s):
+
+yourModelObj.findOneAndRemove(conditions, options, callback)
+yourModelObj.findByIdAndRemove(id, options, callback)
+
+yourModelObj.remove(conditions, callback);
+
+var query = Comment.remove({ _id: id });
+query.exec();
+
+
+Models have static deleteOne() and deleteMany() functions for removing all documents matching the given filter.
+
+Tank.deleteOne({ size: 'large' }, function (err) {
+  if (err) return handleError(err);
+  // deleted at most one tank document
+});
+EXAMPLE:-
+
+app.get('/delete',function(req,res){ //redirecting to the html page
+	res.sendFile(path.join(__dirname + '/html_pages/delete_form.html'));
+});
+
+//This is to delete only one document
+
+app.post('/delete',function(req,res){  //getting the post request and savind the body into the del
+	var del = req.body;
+
+	//to delete only one matched document
+	stdetails.deleteOne({emailid:del.emailid,mobileno:del.mobileno},function(err,response){
+		if(err)
+			res.send('Failed to delete the documnent');
+		else
+			res.send('DELETION SUCCESSFULLY COMPLETED');
+	}); // in above we use the {emailid:del.emailid,mobileno:del.mobileno} to select the document to delete
+});
+
+//todelete every matched documents we use the following exampls:-
+
+	stdetails.remove({emailid:del.emailid,mobileno:del.mobileno},function(err,response){
+		if(err)
+			res.send('Failed to delete the documnent');
+		else
+			res.send('DELETION SUCCESSFULLY COMPLETED');
+	});
 

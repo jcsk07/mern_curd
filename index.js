@@ -90,7 +90,7 @@ app.get('/retrive',function(req,res){
 });
 
 app.get('/find',function(req,res){
-	stdetails.find({textnames:"deepika",fathername:"ramu"},'textnames fathername',function(err,docs){
+	stdetails.find({textnames:"chandu",fathername:"anji"},'textnames fathername',function(err,docs){
 		res.json(docs);
 	});
 });
@@ -98,12 +98,73 @@ app.get('/find',function(req,res){
 
 //---------------------UPDATING THE DOCUMENTS----------------------
 var up;
-
-app.get('/update',function(req,res){
+var dat;
+app.get('/update',function(req,res){ //it shows the form to select the document based on the parameters
 	res.sendFile(path.join(__dirname + '/html_pages/update_form1.html'));
 });
 
+//The action from the update_form.html is sent as post request to the "/updateform" 
+
 app.post('/updateform',function(req,res){
 	up=req.body;
+	res.sendFile(path.join(__dirname + '/html_pages/update_form2.html'));
+});    //this is to redirtedt to the updation form
+
+//the action from the update_form2.html is send as a post request for the "/completeupdate"
+
+app.post('/completeupdate',function(req,res){
+	dat=req.body; //the dat consist of the updated json data
+	stdetails.update({textnames:up.textnames},{$set:{
+		fathername:dat.fathername,
+		emailid:dat.emailid,
+		mobileno:dat.mobileno
+	}},function(err,response){
+		if(err)
+			res.send('Failed');
+		else{
+			console.log("SUCCESSFULLY UPDATED");
+			res.send('SUCCESSFULLY UPDATED');
+
+		}
+	});
 });
+
+//in above the {textnames:up.textnames} is the data for finding the documents 
+//The {$set:{fathername:dat.fathername,..}} are the data in the fields of dat to update the values of the document
+
+//In above the stdetails is the name of the model or the collection name
+
+/*----------------------------------DELETION OF DOCUMENT -----------------------------------------------*/
+
+/*yourModelObj.findOneAndRemove(conditions, options, callback)
+yourModelObj.findByIdAndRemove(id, options, callback)
+
+yourModelObj.remove(conditions, callback);
+
+var query = Comment.remove({ _id: id });
+query.exec();
+
+
+Models have static deleteOne() and deleteMany() functions for removing all documents matching the given filter.
+
+Tank.deleteOne({ size: 'large' }, function (err) {
+  if (err) return handleError(err);
+  // deleted at most one tank document
+});
+*/
+
+app.get('/delete',function(req,res){
+	res.sendFile(path.join(__dirname + '/html_pages/delete_form.html'));
+});
+//the deletion of data based on "emailid" and "mobileno" fields
+app.post('/delete',function(req,res){
+	var del = req.body;
+	stdetails.remove({emailid:del.emailid,mobileno:del.mobileno},function(err,response){
+		if(err)
+			res.send('Failed to delete the documnent');
+		else
+			res.send('DELETION SUCCESSFULLY COMPLETED');
+	});
+});
+
 app.listen(3000);
