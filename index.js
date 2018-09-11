@@ -14,7 +14,10 @@ mongoose.connect('mongodb://localhost/my_db_crud', { useNewUrlParser: true });//
 var db = mongoose.connection;
 
 //declaring a schema for a collection
+var x;
+
 var studentSchema = new mongoose.Schema({  //we are creating the Schema of collection with different fields
+	sno:Number,
 	textnames : String,
 	fathername : String,
 	sex : String,
@@ -25,6 +28,16 @@ var studentSchema = new mongoose.Schema({  //we are creating the Schema of colle
 
 //To create the Collection we use model in the mongoose.model("model_name",Schema)
 var stdetails = mongoose.model('stdetails', studentSchema);
+//we are creating a Schema for the count the no of users and also giving a unique number "sno"
+var counterSchem = new mongoose.Schema({
+	name: String,
+	sno: Number
+});
+//creating a collection named counters 
+var counter = mongoose.model('counters', counterSchem);
+//the above one is to place a counter variable
+
+
 //The above code defines the schema for a student and is used to create a Mongoose Mode stu_details.
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -32,31 +45,48 @@ db.once('open', function() {
 });
 
 //WE ARE PLACING THE POST METHOD IN THIS AND ALSO INSERTING THE DATA TO THE COLLECTION
+/*app.get('/count',async(req,res)=>{
+	counter.update({name:'count'},{$inc:{sno:1}},function(err,doc){
+		if(err)
+			res.send('failed to update');
+		else
+			console.log('yep');
+	});
+	var f = await counter.find({name:'count'});
+	var x = f[0].sno;
+	x= parseInt(x);
+	console.log(x);
+	res.json(x);
+});*/ //the above is to just check the counter value is incrementing while getting the get request
 
-app.post('/studentform',function(req,res){
+app.post('/studentform',async(req,res)=>{  //these are the asynchronous fuctions used 
 	var person = req.body; //taking the json data into the person
-	var stu = new stdetails({  //creating a document for databese with the predeclared mode
-		textnames : person.textnames, //assigning the data from person to the stu using dot operator
+	counter.update({name:'count'},{$inc:{sno:1}},function(err,doc){ //incrementing count value by one 
+		if(err)
+			res.send('failed');
+		else
+			console.log('post success with increment');
+	});
+	var fi = await counter.find({name:'count'});//sending the finda json data to fi
+	var x= fi[0].sno; //assigning the sno value from fi[0] index to "x" variable
+	x = parseInt(x);
+	var y = Number(x);//converting into number and saving iot to the "y"
+	var stu = new stdetails({
+		sno : y,//assigning the unique sno by placing the "y"
+		textnames : person.textnames,
 		fathername : person.fathername,
 		sex : person.sex,
-		City : person.City,
+		City: person.City,
 		emailid : person.emailid,
 		mobileno : person.mobileno
 	});
-	//saving the student details as follows:-
-	stu.save(function(err,stu_details){
-		if(err){
-			console.log("Failed to Insert the data");
-			res.send("insertion Failed");
-		}
-		else{
-			console.log("Successfully inserted document");
-			res.send("insertion successful");
-		}
-
+	stu.save(function(err,st){  //saving the stu details into the stdetails collection
+		if(err)
+			res.send('failed to insert');
+		else
+			res.send('inserted successfully');
 	});
-	
-	console.log("this is the post request of student form");
+	console.log(y);
 }); 
 
 //------------------ROUTING THE HTML PAGES--------------------
@@ -80,6 +110,16 @@ app.post('/pandu',function(req,res){ //the json data is present in the body of t
 });
 
 app.get('/studentform',function(req,res){
+	/*counter.update({name:'count'},{$inc:{sno:1}},function(err,doc){
+		if(err)
+			res.send('failed to update');
+		else
+			console.log('yep');
+	});
+	var f = await counter.find({name:'count'});
+	x = f[0].sno;
+	x= parseInt(x);
+	console.log(x);*/
 	res.sendFile(path.join(__dirname + '/html_pages/student_form.html'));
 });
 
@@ -88,7 +128,7 @@ app.get('/retrive',function(req,res){
 		res.json(response);
 	});
 });
-
+//------------------FINDING THE DOCUMENT FROM DATABASE---------------------
 app.get('/find',function(req,res){
 	stdetails.find({textnames:"chandu",fathername:"anji"},'textnames fathername',function(err,docs){
 		res.json(docs);
